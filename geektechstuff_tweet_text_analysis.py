@@ -45,8 +45,18 @@ def get_tweets(search_term):
         # Sending the data to Azure
         response  = requests.post(sentiment_uri, headers=headers, json=documents)
         # Getting response back from Azure
-        languages = response.json()
-        # Printing the response
-        pprint(languages)
+        azure_response = response.json()
+        # Stripping the score out
+        azure_documents = azure_response['documents']
+        azure_score = azure_documents[0]['score']
+        if azure_score >= 0.6:
+            print(tweet_id,"\n", tweet_text, "from \n", tweet_screen_name)
+            print(azure_documents,"\n is postive")
+        elif azure_score == 0.5:
+            print(tweet_id,"\n", tweet_text, "from \n", tweet_screen_name)
+            print(azure_documents,"\n is neutral")
+        else:
+            print(tweet_id,"\n", tweet_text, "from \n", tweet_screen_name)
+            print(azure_documents,"\n is negative")
 
 get_tweets('geektechstuff')
